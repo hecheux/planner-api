@@ -1,0 +1,27 @@
+services:
+  db:
+    image: postgres:16
+    container_name: planner_db
+    environment:
+      POSTGRES_DB: planner_api_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5439:5432"
+    volumes:
+      - planner_postgres_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: planner_app
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/planner_api_db
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/code
+
+volumes:
+  planner_postgres_data:
